@@ -3,6 +3,7 @@ import sys
 import pygame
 import requests
 
+
 api_server = "http://static-maps.yandex.ru/1.x/"
 lon = input('Введите долготу ')  # "37.530887"
 lat = input('Введите широту ')   # "55.703118"
@@ -58,10 +59,8 @@ while running:
                         maps()
                         screen.blit(pygame.image.load(map_file), (0, 0))
                         pygame.display.flip()
-
             except:
                 pass
-
 pygame.quit()
 
 os.remove(map_file)
