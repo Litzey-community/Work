@@ -1,0 +1,67 @@
+import os
+import sys
+import pygame
+import requests
+
+api_server = "http://static-maps.yandex.ru/1.x/"
+lon = input('Введите долготу ')  # "37.530887"
+lat = input('Введите широту ')   # "55.703118"
+delta = input('Введите маштаб ')  # "0.002"
+params = {
+    "ll": ",".join([lon, lat]),
+    "spn": ",".join([delta, delta]),
+    "l": "map"
+}
+response = requests.get(api_server, params=params)
+if not response:
+    print("Ошибка выполнения запроса:")
+    print(map_request)
+    print("Http статус:", response.status_code, "(", response.reason, ")")
+    sys.exit(1)
+map_file = "map.png"
+with open(map_file, "wb") as file:
+    file.write(response.content)
+
+
+def maps():
+    params = {
+        "ll": ",".join([lon, lat]),
+        "spn": ",".join([delta, delta]),
+        "l": "map"
+    }
+    response = requests.get(api_server, params=params)
+    with open(map_file, "wb") as file:
+        file.write(response.content)
+
+
+pygame.init()
+screen = pygame.display.set_mode((600, 450))
+screen.blit(pygame.image.load(map_file), (0, 0))
+pygame.display.flip()
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        if event.type == pygame.KEYDOWN:
+            try:
+                if event.key == 1073741906:
+                    if float(delta) < 50:
+                        delta = str(float(delta) * 1.5)
+                        maps()
+                        screen.blit(pygame.image.load(map_file), (0, 0))
+                        pygame.display.flip()
+
+                elif event.key == 1073741905:
+                    if float(delta) > 0.0001755829903978052:
+                        delta = str(float(delta) / 1.5)
+                        maps()
+                        screen.blit(pygame.image.load(map_file), (0, 0))
+                        pygame.display.flip()
+
+            except:
+                pass
+
+pygame.quit()
+
+os.remove(map_file)
