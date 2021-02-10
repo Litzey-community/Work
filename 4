@@ -1,0 +1,70 @@
+import requests
+import pygame
+import os
+import sys
+# Чтобы переключать слои карты нужно нажимать на правую кнопку миши
+
+index = 0
+layers = ["map", "sat", "skl"]
+api_server = "http://static-maps.yandex.ru/1.x/"
+lon = input('Введите долготу ')  # "37.530887"
+lat = input('Введите широту ')   # "55.703118"
+delta = input('Введите маштаб ')  # "0.002"
+params = {
+    "ll": ",".join([lon, lat]),
+    "spn": ",".join([delta, delta]),
+    "l": layers[index]
+}
+response = requests.get(api_server, params=params)
+if not response:
+    print("Ошибка выполнения запроса:")
+    print("Http статус:", response.status_code, "(", response.reason, ")")
+    sys.exit(1)
+
+running = True
+pygame.init()
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 3:
+                index += 1
+                if index == 3:
+                    index = 0
+                params['l'] = layers[index]
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RIGHT:
+                lon1 = params['ll'].split(',')
+                lon1 = [float(i) for i in lon1]
+                lon1[0] += 0.4 * float(delta)
+                lon1 = [str(i) for i in lon1]
+                params['ll'] = ','.join(lon1)
+            elif event.key == pygame.K_LEFT:
+                lon1 = params['ll'].split(',')
+                lon1 = [float(i) for i in lon1]
+                lon1[0] -= 0.4 * float(delta)
+                lon1 = [str(i) for i in lon1]
+                params['ll'] = ','.join(lon1)
+            elif event.key == pygame.K_UP:
+                lon1 = params['ll'].split(',')
+                lon1 = [float(i) for i in lon1]
+                lon1[1] += 0.4 * float(delta)
+                lon1 = [str(i) for i in lon1]
+                params['ll'] = ','.join(lon1)
+            elif event.key == pygame.K_DOWN:
+                lon1 = params['ll'].split(',')
+                lon1 = [float(i) for i in lon1]
+                lon1[1] -= 0.4 * float(delta)
+                lon1 = [str(i) for i in lon1]
+                params['ll'] = ','.join(lon1)
+    response = requests.get(api_server, params=params)
+    screen = pygame.display.set_mode((600, 450))
+    map_file = "map.png"
+    with open(map_file, "wb") as file:
+        file.write(response.content)
+    screen.blit(pygame.image.load(map_file), (0, 0))
+    pygame.display.flip()
+pygame.quit()
+
+os.remove(map_file)
