@@ -34,7 +34,7 @@ while running:
                     index = 0
                 params['l'] = layers[index]
         if event.type == pygame.KEYDOWN:
-            if event.key == 1073741921:
+            if event.key == pygame.K_PAGEUP:
                 if float(delta) < 60:
                     delta = str(float(delta) * 1.5)
                     lon1 = params['spn'].split(',')
@@ -44,7 +44,7 @@ while running:
 
                     lon1 = [str(i) for i in lon1]
                     params['spn'] = ','.join(lon1)
-            elif event.key == 1073741915:
+            elif event.key == pygame.K_PAGEDOWN:
                 delta = str(float(delta) / 1.5)
                 lon1 = params['spn'].split(',')
                 lon1 = [float(i) for i in lon1]
