@@ -34,7 +34,25 @@ while running:
                     index = 0
                 params['l'] = layers[index]
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_RIGHT:
+            if event.key == 1073741921:
+                if float(delta) < 60:
+                    delta = str(float(delta) * 1.5)
+                    lon1 = params['spn'].split(',')
+                    lon1 = [float(i) for i in lon1]
+                    lon1[1] = delta
+                    lon1[0] = delta
+
+                    lon1 = [str(i) for i in lon1]
+                    params['spn'] = ','.join(lon1)
+            elif event.key == 1073741915:
+                delta = str(float(delta) / 1.5)
+                lon1 = params['spn'].split(',')
+                lon1 = [float(i) for i in lon1]
+                lon1[1] = delta
+                lon1[0] = delta
+                lon1 = [str(i) for i in lon1]
+                params['spn'] = ','.join(lon1)
+            elif event.key == pygame.K_RIGHT:
                 lon1 = params['ll'].split(',')
                 lon1 = [float(i) for i in lon1]
                 lon1[0] += 0.4 * float(delta)
