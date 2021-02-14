@@ -1,9 +1,11 @@
+import requests
+import pygame
 import os
 import sys
-import pygame
-import requests
+# Чтобы переключать слои карты нужно нажимать на правую кнопку миши
 
-
+index = 0
+layers = ["map", "sat", "skl"]
 api_server = "http://static-maps.yandex.ru/1.x/"
 lon = input('Введите долготу ')  # "37.530887"
 lat = input('Введите широту ')   # "55.703118"
@@ -11,56 +13,47 @@ delta = input('Введите маштаб ')  # "0.002"
 params = {
     "ll": ",".join([lon, lat]),
     "spn": ",".join([delta, delta]),
-    "l": "map"
+    "l": layers[index]
 }
 response = requests.get(api_server, params=params)
 if not response:
     print("Ошибка выполнения запроса:")
-    print(map_request)
     print("Http статус:", response.status_code, "(", response.reason, ")")
     sys.exit(1)
-map_file = "map.png"
-with open(map_file, "wb") as file:
-    file.write(response.content)
 
-
-def maps():
-    params = {
-        "ll": ",".join([lon, lat]),
-        "spn": ",".join([delta, delta]),
-        "l": "map"
-    }
-    response = requests.get(api_server, params=params)
-    with open(map_file, "wb") as file:
-        file.write(response.content)
-
-
-pygame.init()
-screen = pygame.display.set_mode((600, 450))
-screen.blit(pygame.image.load(map_file), (0, 0))
-pygame.display.flip()
 running = True
+pygame.init()
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.KEYDOWN:
-            try:
-                if event.key == 1073741906:
-                    if float(delta) < 50:
-                        delta = str(float(delta) * 1.5)
-                        maps()
-                        screen.blit(pygame.image.load(map_file), (0, 0))
-                        pygame.display.flip()
+            if event.key == 1073741915:
+                if float(delta) < 60:
+                    delta = str(float(delta) * 1.5)
+                    lon1 = params['spn'].split(',')
+                    lon1 = [float(i) for i in lon1]
+                    lon1[1] = delta
+                    lon1[0] = delta
 
-                elif event.key == 1073741905:
-                    if float(delta) > 0.0001755829903978052:
-                        delta = str(float(delta) / 1.5)
-                        maps()
-                        screen.blit(pygame.image.load(map_file), (0, 0))
-                        pygame.display.flip()
-            except:
-                pass
+                    lon1 = [str(i) for i in lon1]
+                    params['spn'] = ','.join(lon1)
+            elif event.key == 1073741921:
+                delta = str(float(delta) / 1.5)
+                lon1 = params['spn'].split(',')
+                lon1 = [float(i) for i in lon1]
+                lon1[1] = delta
+                lon1[0] = delta
+                lon1 = [str(i) for i in lon1]
+                params['spn'] = ','.join(lon1)
+
+    response = requests.get(api_server, params=params)
+    screen = pygame.display.set_mode((600, 450))
+    map_file = "map.png"
+    with open(map_file, "wb") as file:
+        file.write(response.content)
+    screen.blit(pygame.image.load(map_file), (0, 0))
+    pygame.display.flip()
 pygame.quit()
 
 os.remove(map_file)
