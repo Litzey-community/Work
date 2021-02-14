@@ -70,6 +70,8 @@ while running:
                                 ['GeoObjectCollection']['featureMember'][0]\
                                 ['GeoObject']['Point']['pos'].split()
                             params['ll'] = ','.join(pos)
+                            params['pt'] = ','.join(pos)
+
                             Start = True
                         except:
                             print('Возможно произошла ошибка, попробуйте \
