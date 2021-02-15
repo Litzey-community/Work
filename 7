@@ -163,6 +163,7 @@ while running:
         response = requests.get(api_server, params=params)
         with open(map_file, "wb") as file:
             file.write(response.content)
+        pygame.draw.rect(screen, pygame.Color('White'), [(0, 50), (600, 450)])
         screen.blit(pygame.image.load(map_file), (0, 50))
     pygame.display.flip()
 pygame.quit()
