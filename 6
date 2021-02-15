@@ -70,7 +70,7 @@ while running:
                                 ['GeoObjectCollection']['featureMember'][0]\
                                 ['GeoObject']['Point']['pos'].split()
                             params['ll'] = ','.join(pos)
-                            params['pt'] = ','.join(pos)
+                            params['pt'] = ','.join(pos) + ',org'
 
                             Start = True
                         except:
