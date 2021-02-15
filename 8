@@ -4,6 +4,7 @@ import os
 import sys
 # Чтобы переключать слои карты нужно нажимать на правую кнопку миши
 
+
 def if_ll(lon):
     if lon[1] > 85:
         lon[1] = lon[1] - 170
@@ -28,11 +29,11 @@ params = {
 running = True
 pygame.init()
 search_text = ''
-sl = {97: 'Ф', 98: 'И', 99: 'С', 100: 'В', 101: 'У', 102: 'А', 103: 'П', 
-      104: 'Р', 105: 'Ш', 106: 'О', 107: 'Л', 108: 'Д', 109: 'Ь', 110: 'Т', 
-      111: 'Щ', 112: 'З', 113: 'Й', 114: 'К', 115: 'Ы', 116: 'Е', 117: 'Г', 
-      118: 'М', 119: 'Ц', 120: 'Ч', 121: 'Н', 122: 'Я', 32: ' ',48: '0', 
-      49: '1', 50: '2', 51: '3', 52: '4', 53: '5', 54: '6', 55: '7', 56: '8', 
+sl = {97: 'Ф', 98: 'И', 99: 'С', 100: 'В', 101: 'У', 102: 'А', 103: 'П',
+      104: 'Р', 105: 'Ш', 106: 'О', 107: 'Л', 108: 'Д', 109: 'Ь', 110: 'Т',
+      111: 'Щ', 112: 'З', 113: 'Й', 114: 'К', 115: 'Ы', 116: 'Е', 117: 'Г',
+      118: 'М', 119: 'Ц', 120: 'Ч', 121: 'Н', 122: 'Я', 32: ' ', 48: '0',
+      49: '1', 50: '2', 51: '3', 52: '4', 53: '5', 54: '6', 55: '7', 56: '8',
       57: '9', 1093: 'Х', 1098: 'Ъ', 1078: 'Ж', 1101: 'Э', 1073: 'Б', 1102: 'Ю'}
 
 screen = pygame.display.set_mode((600, 550))
@@ -58,33 +59,37 @@ while running:
                     index = 0
                 params['l'] = layers[index]
             if event.button == 1:
-                if event.pos[0] > 0 and event.pos [1] > 515 and \
-                   event.pos[0] < 100 and event.pos[1] < 550: # кнопка Reset
+                if event.pos[0] > 0 and event.pos[1] > 515 and \
+                   event.pos[0] < 100 and event.pos[1] < 550:  # кнопка Reset
                     params = {"spn": params['spn'],
-                        "l": params['l'],
-                        'll': params['ll']}
-                    pygame.draw.rect(screen, pygame.Color('White'), [(100, 525), (500, 24)])
-                if event.pos[0] > 5 and event.pos [1] > 5 and \
-                   event.pos[0] < 450 and event.pos[1] < 35: # Lineedit
+                              "l": params['l'],
+                              'll': params['ll']}
+                    pygame.draw.rect(screen, pygame.Color('White'), [(100, 510), (500, 50)])
+                if event.pos[0] > 5 and event.pos[1] > 5 and \
+                   event.pos[0] < 450 and event.pos[1] < 35:  # Lineedit
                     Start_input = True
-                if event.pos[0] > 470 and event.pos [1] > 8 and \
-                   event.pos[0] < 545 and event.pos[1] < 42: # Кнопка поиска
+                if event.pos[0] > 470 and event.pos[1] > 8 and \
+                   event.pos[0] < 545 and event.pos[1] < 42:  # Кнопка поиска
                     Start_input = False
                     geocoder_request = f"http://geocode-maps.yandex.ru/1.x/?apikey=40d1649f-0493-4b70-98ba-98533de7710b&geocode={search_text}&format=json"
                     response = requests.get(geocoder_request)
                     if response:
                         try:
                             json_response = response.json()
-                            name = json_response['response']\
-                                ['GeoObjectCollection']['featureMember'][0]\
-                                ['GeoObject']['metaDataProperty']\
-                                ['GeocoderMetaData']['text']
-                            font = pygame.font.Font(None, 24) 
+                            name = json_response['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']['metaDataProperty']['GeocoderMetaData']['text']
+                            font = pygame.font.Font(None, 24)
                             string = font.render(name, 1, pygame.Color('black'))
-                            screen.blit(string, (100, 525))
-                            pos = json_response['response']\
-                                ['GeoObjectCollection']['featureMember'][0]\
-                                ['GeoObject']['Point']['pos'].split()
+                            print(string.get_rect())
+                            if string.get_rect()[2] > 475:
+                                name2 = ', '.join(name.split(', ')[:2])
+                                name1 = ', '.join(name.split(', ')[2:])
+                                string2 = font.render(name2, 1, pygame.Color('black'))
+                                string1 = font.render(name1, 1, pygame.Color('black'))
+                                screen.blit(string1, (100, 530))
+                                screen.blit(string2, (100, 510))
+                            else:
+                                screen.blit(string, (100, 510))
+                            pos = json_response['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']['Point']['pos'].split()
                             params['ll'] = ','.join(pos)
                             params['pt'] = ','.join(pos) + ',org'
 
@@ -92,13 +97,15 @@ while running:
                         except:
                             print('Возможно произошла ошибка, попробуйте \
                             изменить ведённое название')
-                        
+
         if event.type == pygame.KEYDOWN:
             if event.unicode and Start_input:
                 try:
                     search_text += sl[event.key]
-                    font = pygame.font.Font(None, 35)    
+                    font = pygame.font.Font(None, 35)
                     string = font.render(search_text, 1, pygame.Color('black'))
+                    pygame.draw.rect(screen, pygame.Color('White'), [(100, 510), (500, 50)])
+
                     a = string.get_rect()
                     b = 9
                     if a[2] > 450:
@@ -137,7 +144,7 @@ while running:
                 pygame.draw.rect(screen, pygame.Color('White'), [(0, 5), (460, 35)])
                 screen.blit(string, (b, 12))
                 pygame.draw.rect(screen, pygame.Color('White'), [(0, 5), (5, 35)])
-                pygame.draw.rect(screen, pygame.Color('Yellow'), [(5, 5), (450, 35)], 2)                
+                pygame.draw.rect(screen, pygame.Color('Yellow'), [(5, 5), (450, 35)], 2)
             if event.key == pygame.K_RIGHT:
                 lon1 = params['ll'].split(',')
                 lon1 = [float(i) for i in lon1]
