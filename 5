@@ -79,11 +79,20 @@ while running:
                         
         if event.type == pygame.KEYDOWN:
             if event.unicode and Start_input:
-                search_text += sl[event.key]
-                font = pygame.font.Font(None, 35)
-                string = font.render(search_text, 1, pygame.Color('black'))
-                pygame.draw.rect(screen, (255, 255, 255), [(7, 7), (446, 31)])
-                screen.blit(string, (9, 12))
+                try:
+                    search_text += sl[event.key]
+                    font = pygame.font.Font(None, 35)    
+                    string = font.render(search_text, 1, pygame.Color('black'))
+                    a = string.get_rect()
+                    b = 9
+                    if a[2] > 450:
+                        b = 450 - a[2]
+                    pygame.draw.rect(screen, pygame.Color('White'), [(0, 5), (455, 35)])
+                    screen.blit(string, (b, 12))
+                    pygame.draw.rect(screen, pygame.Color('White'), [(0, 5), (5, 35)])
+                    pygame.draw.rect(screen, pygame.Color('Yellow'), [(5, 5), (450, 35)], 2)
+                except BaseException as ve:
+                    pass
             if event.key == 1073741915:
                 if float(delta) < 60:
                     delta = str(float(delta) * 1.5)
@@ -105,8 +114,14 @@ while running:
                 search_text = search_text[:-1]
                 font = pygame.font.Font(None, 35)
                 string = font.render(search_text, 1, pygame.Color('black'))
-                pygame.draw.rect(screen, (255, 255, 255), [(7, 7), (446, 31)])
-                screen.blit(string, (9, 12))                
+                a = string.get_rect()
+                b = 9
+                if a[2] > 450:
+                    b = 450 - a[2]
+                pygame.draw.rect(screen, pygame.Color('White'), [(0, 5), (460, 35)])
+                screen.blit(string, (b, 12))
+                pygame.draw.rect(screen, pygame.Color('White'), [(0, 5), (5, 35)])
+                pygame.draw.rect(screen, pygame.Color('Yellow'), [(5, 5), (450, 35)], 2)                
             if event.key == pygame.K_RIGHT:
                 lon1 = params['ll'].split(',')
                 lon1 = [float(i) for i in lon1]
