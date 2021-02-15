@@ -79,7 +79,6 @@ while running:
                             name = json_response['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']['metaDataProperty']['GeocoderMetaData']['text']
                             font = pygame.font.Font(None, 24)
                             string = font.render(name, 1, pygame.Color('black'))
-                            print(string.get_rect())
                             if string.get_rect()[2] > 475:
                                 name2 = ', '.join(name.split(', ')[:2])
                                 name1 = ', '.join(name.split(', ')[2:])
