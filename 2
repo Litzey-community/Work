@@ -28,7 +28,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.KEYDOWN:
-            if event.key == 1073741915:
+            if event.key == 1073741899:
                 if float(delta) < 60:
                     delta = str(float(delta) * 1.5)
                     lon1 = params['spn'].split(',')
@@ -38,7 +38,7 @@ while running:
 
                     lon1 = [str(i) for i in lon1]
                     params['spn'] = ','.join(lon1)
-            elif event.key == 1073741921:
+            elif event.key == 1073741902:
                 delta = str(float(delta) / 1.5)
                 lon1 = params['spn'].split(',')
                 lon1 = [float(i) for i in lon1]
@@ -46,7 +46,6 @@ while running:
                 lon1[0] = delta
                 lon1 = [str(i) for i in lon1]
                 params['spn'] = ','.join(lon1)
-
     response = requests.get(api_server, params=params)
     screen = pygame.display.set_mode((600, 450))
     map_file = "map.png"
